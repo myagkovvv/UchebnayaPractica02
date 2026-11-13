@@ -1,0 +1,160 @@
+﻿<Window x:Class="BookStore.Windows.OrdersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BookStore.Windows"
+        mc:Ignorable="d"
+        Title="ООО «ЧитайГород» — Список заказов"
+        Height="700" Width="1080"
+        MinHeight="550" MinWidth="850"
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded">
+    <Grid Background="{StaticResource PrimaryBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{StaticResource SecondaryBackgroundBrush}" Padding="16,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image x:Name="LogoImage" Height="44" Stretch="Uniform" Margin="0,0,12,0"/>
+                    <TextBlock Text="ООО «ЧитайГород» — Управление заказами"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource AccentBrush}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <StackPanel Margin="0,0,16,0" VerticalAlignment="Center">
+                        <TextBlock x:Name="UserFullNameTextBlock"
+                                   FontWeight="Bold"
+                                   FontSize="14"
+                                   HorizontalAlignment="Right"/>
+                        <TextBlock x:Name="UserRoleTextBlock"
+                                   FontSize="12"
+                                   Foreground="#333333"
+                                   HorizontalAlignment="Right"/>
+                    </StackPanel>
+                    <Button x:Name="BackButton"
+                            Content="Назад к товарам"
+                            Padding="14,6"
+                            Click="BackButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <ListBox x:Name="OrdersListBox"
+                 Grid.Row="1"
+                 Margin="16,12"
+                 BorderThickness="0"
+                 Background="Transparent"
+                 HorizontalContentAlignment="Stretch"
+                 SelectionChanged="OrdersListBox_SelectionChanged"
+                 MouseDoubleClick="OrdersListBox_MouseDoubleClick">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Margin" Value="0,0,0,10"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="#FFFFFF"
+                            BorderBrush="{StaticResource AccentBrush}"
+                            BorderThickness="1.5"
+                            CornerRadius="6"
+                            Padding="14">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="220"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock FontSize="16" FontWeight="Bold" Foreground="{StaticResource AccentBrush}">
+                                    <Run Text="Заказ № "/>
+                                    <Run Text="{Binding Id}"/>
+                                    <Run Text=" | Артикулы: "/>
+                                    <Run Text="{Binding ArticlesSummary, Mode=OneWay}"/>
+                                </TextBlock>
+
+                                <TextBlock Margin="0,6,0,2">
+                                    <Run Text="Статус заказа: " FontWeight="Bold"/>
+                                    <Run Text="{Binding Status.Name}"/>
+                                </TextBlock>
+
+                                <TextBlock Margin="0,0,0,2">
+                                    <Run Text="Адрес пункта выдачи: " FontWeight="Bold"/>
+                                    <Run Text="{Binding FullPickupAddress, Mode=OneWay}"/>
+                                </TextBlock>
+
+                                <TextBlock Margin="0,0,0,2">
+                                    <Run Text="Клиент: " FontWeight="Bold"/>
+                                    <Run Text="{Binding Client.FullName}"/>
+                                    <Run Text=" | Код получения: " FontWeight="Bold"/>
+                                    <Run Text="{Binding PickupCode}"/>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <Border Grid.Column="1"
+                                    BorderBrush="{StaticResource AccentBrush}"
+                                    BorderThickness="1,0,0,0"
+                                    Padding="12,0,0,0"
+                                    VerticalAlignment="Center">
+                                <StackPanel>
+                                    <TextBlock Margin="0,0,0,6">
+                                        <Run Text="Дата заказа:" FontWeight="Bold"/>
+                                        <LineBreak/>
+                                        <Run Text="{Binding OrderDate, StringFormat={}{0:dd.MM.yyyy}}"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Дата выдачи:" FontWeight="Bold"/>
+                                        <LineBreak/>
+                                        <Run Text="{Binding DeliveryDate, StringFormat={}{0:dd.MM.yyyy}}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Border x:Name="AdminOrdersPanel"
+                Grid.Row="2"
+                Background="{StaticResource SecondaryBackgroundBrush}"
+                Padding="16,10">
+            <Grid>
+                <TextBlock Text="Подсказка: дважды нажмите на заказ для редактирования"
+                           VerticalAlignment="Center"
+                           Foreground="#222222"
+                           FontSize="13"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="AddOrderButton"
+                            Content="Добавить заказ"
+                            Margin="0,0,10,0"
+                            Click="AddOrderButton_Click"/>
+                    <Button x:Name="EditOrderButton"
+                            Content="Редактировать заказ"
+                            Margin="0,0,10,0"
+                            Click="EditOrderButton_Click"/>
+                    <Button x:Name="DeleteOrderButton"
+                            Content="Удалить заказ"
+                            Background="#B03A2E"
+                            Click="DeleteOrderButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
